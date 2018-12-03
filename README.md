@@ -12,12 +12,12 @@ yarn add ts-mongoose mongoose @types/mongoose
 ```
 
 ## The Problem
-When using mongoose and Typescript, you must define schemas and interfaces. Both definitions must be maintained separately, and must match each other. It can be error-prone during development, and cause overhead.  
-
-`ts-mongoose` is a very lightweight that allows you to create a mongoose schema, and a typescript type from a common definition.  
-All types as created from 1-liner functions and does not depends on decorators❗️.  
-
-For example:
+When using mongoose and Typescript, you must define schemas and interfaces. Both definitions must be maintained separately and must match each other. It can be error-prone during development and cause overhead.  
+  
+`ts-mongoose` is a very lightweight that allows you to create a mongoose schema and a typescript type from a common definition.  
+All types as created from 1-liner functions and does not depend on decorators❗️.
+  
+For example:  
 `Type.string()` returns `{type: String, required: true}`, which is the same definition required in in original mongoose library.
 
 ## Example
