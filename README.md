@@ -14,11 +14,11 @@ yarn add ts-mongoose mongoose @types/mongoose
 ## The Problem
 When using mongoose and Typescript, you must define schemas and interfaces. Both definitions must be maintained separately and must match each other. It can be error-prone during development and cause overhead.  
   
-`ts-mongoose` is a very lightweight that allows you to create a mongoose schema and a typescript type from a common definition.  
+`ts-mongoose` is a very lightweight library that allows you to create a mongoose schema and a typescript type from a common definition.  
 All types as created from 1-liner functions and does not depend on decorators❗️.
   
 For example:  
-`Type.string()` returns `{type: String, required: true}`, which is the same definition required in in original mongoose library.
+`Type.string()` returns `{type: String, required: true}`, which is the same definition required in the original mongoose library.
 
 ## Example
 
@@ -123,14 +123,14 @@ User.findById('123').then(user => {
   email: Type.string(),
 }
 ```
-- Each type accept the same options from mongoose
+- Each type accepts the same options from mongoose
 ```ts
 {
   // same as {type: String, required: true, unique: true, index: true}
   email: Type.string({unique: true, index: true})
 }
 ```
-- `schema`, `object`, `array` has a method `of` where you must provide a child type
+- `schema`, `object`, `array` types have a method `of` where you must provide a child type
 ```ts
 {
   // same as {type: [String], required: true}
