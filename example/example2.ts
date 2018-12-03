@@ -1,5 +1,4 @@
 import { Schema, model, Model, Document } from 'mongoose';
-import { Type } from '../src';
 
 const AddressSchema = new Schema({
   city: { type: String, required: true },
@@ -14,7 +13,7 @@ const UserSchema = new Schema({
   comments: [
     {
       body: { type: String, required: true },
-      date: Type.date(),
+      date: { type: Date, required: true },
     },
   ],
   date: { type: Date, default: Date.now, required: true },
