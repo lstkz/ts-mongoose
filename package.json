@@ -1,0 +1,38 @@
+{
+  "name": "ts-mongoose",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/commonjs/index.js",
+  "module": "dist/es/index.js",
+  "jsnext:main": "dist/es/index.js",
+  "types": "dist/es/index.d.ts",
+  "scripts": {
+    "jest": "jest",
+    "tsc": "tsc",
+    "test": "yarn run tsc --noEmit && yarn run jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BetterCallSky/ts-mongoose.git"
+  },
+  "author": "Łukasz Sentkiewicz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BetterCallSky/ts-mongoose/issues"
+  },
+  "homepage": "https://github.com/BetterCallSky/ts-mongoose#readme",
+  "devDependencies": {
+    "@types/mongoose": "^5.3.2",
+    "mongoose": "^5.3.14",
+    "@types/jest": "^23.3.9",
+    "jest": "^23.6.0",
+    "prettier": "^1.14.3",
+    "ts-jest": "^23.10.4",
+    "typescript": "^3.1.6"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@types/mongoose": "^5.3.2",
+    "mongoose": "^5.3.14"
+  }
+}
