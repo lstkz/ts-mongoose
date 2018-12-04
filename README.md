@@ -152,6 +152,9 @@ Method will be available if you import a special plugin.
 // models.ts
 
 import 'ts-mongoose/plugin'
+
+User.find().populateTs('comments');
+
 ```
 
 ## Refs
@@ -178,7 +181,7 @@ const UserSchema = createSchema({
 const User = typedModel('User', UserSchema);
 ```
 Autocomplete popup:  
-![alt autocomplete](.github/custom.png)
+![alt autocomplete](.github/refs.gif)
 
 
 
