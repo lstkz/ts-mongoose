@@ -137,9 +137,53 @@ User.findById('123').then(user => {
   tags: Type.array().of(Type.string())
 }
 ```
+- `ref` is a special type for creating references
+```ts
+{
+  // same as [{type: Schema.Types.ObjectId, ref: 'Comment'}]
+  comments: Type.array().of(
+    Type.ref(Type.objectId()).to('Comment', CommentSchema)
+  ),
+}
+```
+- `populateTs(property: string)` use this function to populate a property and adjust the returned type automatically. Under the hood it calls only the native `populate` method.  
+Method will be available if you import a special plugin.
+```ts
+// models.ts
+
+import 'ts-mongoose/plugin'
+```
+
+## Refs
+Refs and populations are supported.  
+Check code under `example/example4.ts`.  
+
+
+![alt autocomplete](.github/refs.png)
+
+
+### Custom Field
+If you need to specify custom fields in the model, you can add a fake annotation.  
+It's only required if you add virtual fields or custom methods to the model.
+
+```ts
+const UserSchema = createSchema({
+  title: Type.string(),
+  author: Type.string(),
+  ...({} as {
+    generatedField: string;
+    customFunction: () => number;
+  }),
+});
+const User = typedModel('User', UserSchema);
+```
+Autocomplete popup:  
+![alt autocomplete](.github/custom.png)
+
+
+
 
 ### TODO
-- support ref
 - support types: Decimal128, Map
 
 MIT

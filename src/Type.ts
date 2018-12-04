@@ -82,4 +82,12 @@ export const Type = {
       } as any) as Extract<T>;
     },
   }),
+  ref: <T>(schema: T) => ({
+    to<TSchema>(name: string, refSchema: TSchema) {
+      return ({
+        ...(schema as any),
+        ref: name,
+      } as any) as Extract<TSchema> | T;
+    },
+  }),
 };

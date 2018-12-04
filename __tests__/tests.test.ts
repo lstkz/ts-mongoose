@@ -302,3 +302,29 @@ describe('schema', () => {
     });
   });
 });
+
+describe('ref', () => {
+  test('ref', () => {
+    const CommentSchema = createSchema({
+      content: Type.string(),
+      date: Type.date(),
+    });
+    const schema = {
+      comments: Type.array().of(
+        Type.ref(Type.string()).to('Comment', CommentSchema)
+      ),
+    };
+    expect(schema).toEqual({
+      comments: {
+        required: true,
+        type: [
+          {
+            ref: 'Comment',
+            required: true,
+            type: String,
+          },
+        ],
+      },
+    });
+  });
+});
