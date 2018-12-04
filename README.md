@@ -162,7 +162,7 @@ Refs and populations are supported.
 Check code under `example/example4.ts`.  
 
 
-![alt autocomplete](.github/refs.png)
+![alt autocomplete](.github/refs.gif)
 
 
 ### Custom Field
@@ -181,7 +181,7 @@ const UserSchema = createSchema({
 const User = typedModel('User', UserSchema);
 ```
 Autocomplete popup:  
-![alt autocomplete](.github/refs.gif)
+![alt autocomplete](.github/custom.png)
 
 
 
