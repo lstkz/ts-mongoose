@@ -1,11 +1,9 @@
-import { plugin } from 'mongoose';
+import { Query } from 'mongoose';
 import { Populate, MaybeItem } from './types';
 
-plugin((schema: any) => {
-  schema.statics.populateTs = function(prop: string) {
-    return this.populate(prop);
-  };
-});
+Query.prototype.populateTs = function populateTs(prop) {
+  return this.populate(prop);
+};
 
 declare module 'mongoose' {
   interface DocumentQuery<T, DocType extends Document, QueryHelpers = {}>
