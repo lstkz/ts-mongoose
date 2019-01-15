@@ -4,9 +4,11 @@ export type Extract<T> = T extends { definition: infer U } ? U : never;
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+type ExcludeBaseType<T> = Exclude<T, string | number | Types.ObjectId>;
+
 export type ExcludeFromArray<T> = T extends Array<infer U>
-  ? Array<Exclude<U, string | number | Types.ObjectId>>
-  : T;
+  ? Array<ExcludeBaseType<U>>
+  : ExcludeBaseType<T>;
 
 export type PopulateItem<T, P extends keyof T> = Omit<T, P> &
   { [x in P]: ExcludeFromArray<T[x]> };
