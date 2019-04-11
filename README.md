@@ -157,6 +157,32 @@ User.find().populateTs('comments');
 
 ```
 
+## Extracting Document type
+
+Use `ExtractDoc` to extract generated type by `createSchema`.  
+Example:
+
+```ts
+import { createSchema, Type, typedModel, ExtractDoc } from 'ts-mongoose';
+
+export const UserSchema = createSchema({
+  email: Type.string(),
+  username: Type.string(),
+  isBlocked: Type.boolean(),
+});
+
+export const User = typedModel('User', UserSchema);
+export type UserDoc = ExtractDoc<typeof User>;
+
+
+// example function 
+
+async function blockUser(user: UserDoc) {
+  user.isBlocked = true;
+  await user.save();
+}
+```
+
 ## Refs
 Refs and populations are supported.  
 Check code under `example/example4.ts`.  

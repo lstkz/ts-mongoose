@@ -1,4 +1,4 @@
-import { createSchema, Type, typedModel } from '../src';
+import { createSchema, Type, typedModel, ExtractDoc } from '../src';
 
 const AddressSchema = createSchema({
   city: Type.string(),
@@ -31,3 +31,7 @@ User.findById('123').then(user => {
     // user.
   }
 });
+
+type UserDoc = ExtractDoc<typeof User>;
+
+function blockUser(user: UserDoc) {}

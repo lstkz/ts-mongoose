@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { Types, Model } from 'mongoose';
 
 export type Extract<T> = T extends { definition: infer U } ? U : never;
 
@@ -28,3 +28,5 @@ export type Populate<T, P> = T extends Array<infer U>
   : P extends keyof T
   ? PopulateItem<T, P>
   : T;
+
+export type ExtractDoc<T> = T extends Model<infer U> ? U : never;
