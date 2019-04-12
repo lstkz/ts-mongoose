@@ -1,4 +1,4 @@
-import { Types, Model } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 export type Extract<T> = T extends { definition: infer U } ? U : never;
 
@@ -29,4 +29,23 @@ export type Populate<T, P> = T extends Array<infer U>
   ? PopulateItem<T, P>
   : T;
 
-export type ExtractDoc<T> = T extends Model<infer U> ? U : never;
+export type ExtractProps<T> = T extends { definition: infer D } ? D : never;
+export type ExtractDoc<T> = T extends { definition: infer D }
+  ? D & Document
+  : never;
+
+export type OptionalPropNames<T> = {
+  [P in keyof T]: null extends T[P] ? P : never
+}[keyof T];
+
+export type RequiredPropNames<T> = {
+  [P in keyof T]: null extends T[P] ? never : P
+}[keyof T];
+
+export type OptionalProps<T> = { [P in OptionalPropNames<T>]: T[P] };
+export type RequiredProps<T> = { [P in RequiredPropNames<T>]: T[P] };
+
+export type MakeOptional<T> = { [P in keyof T]?: T[P] };
+
+export type ConvertObject<T> = { [P in RequiredPropNames<T>]: T[P] } &
+  { [P in OptionalPropNames<T>]?: T[P] };

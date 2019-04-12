@@ -15,7 +15,7 @@ const createOptionalType = <T>(type: any) => (
   return ({
     ...options,
     type,
-  } as any) as T | null;
+  } as any) as T | null | undefined;
 };
 
 export const Type = {

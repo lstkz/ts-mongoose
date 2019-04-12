@@ -159,28 +159,41 @@ User.find().populateTs('comments');
 
 ## Extracting Document type
 
-Use `ExtractDoc` to extract generated type by `createSchema`.  
+Use `ExtractDoc` to extract generated document type.  
+Use `ExtractProps` to extract generated base model properties.  
 Example:
 
 ```ts
-import { createSchema, Type, typedModel, ExtractDoc } from 'ts-mongoose';
+import { createSchema, Type, typedModel, ExtractDoc, ExtractProps } from 'ts-mongoose';
 
 export const UserSchema = createSchema({
   email: Type.string(),
   username: Type.string(),
-  isBlocked: Type.boolean(),
+  isBlocked: Type.optionalBoolean(),
 });
 
 export const User = typedModel('User', UserSchema);
-export type UserDoc = ExtractDoc<typeof User>;
+export type UserDoc = ExtractDoc<typeof UserSchema>;
+export type UserProps = ExtractProps<typeof UserSchema>;
 
 
 // example function 
 
 async function blockUser(user: UserDoc) {
   user.isBlocked = true;
+  // access all properties + Document methods and properties
   await user.save();
 }
+
+function randomUser(): UserProps {
+  // must return `email`, `username`
+  // `isBlocked` is optional
+  return {
+    email: 'user1@example.com',
+    username: 'user1',
+  }
+}
+
 ```
 
 ## Refs
