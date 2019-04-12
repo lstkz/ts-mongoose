@@ -1,5 +1,5 @@
 import { SchemaTypeOpts, Schema, Types } from 'mongoose';
-import { Extract } from './types';
+import { Extract, ConvertObject } from './types';
 
 const createType = <T>(type: any) => (options: SchemaTypeOpts<T> = {}) => {
   return ({
@@ -37,7 +37,7 @@ export const Type = {
         required: true,
         ...options,
         type: schema,
-      } as any) as T;
+      } as any) as ConvertObject<T>;
     },
   }),
   optionalObject: (options: SchemaTypeOpts<object> = {}) => ({
@@ -45,7 +45,7 @@ export const Type = {
       return ({
         ...options,
         type: schema,
-      } as any) as T;
+      } as any) as ConvertObject<T> | null | undefined;
     },
   }),
   array: (options: SchemaTypeOpts<Array<any>> = {}) => ({
@@ -54,7 +54,7 @@ export const Type = {
         required: true,
         ...options,
         type: [schema],
-      } as any) as T[];
+      } as any) as ConvertObject<T>[];
     },
   }),
   optionalArray: (options: SchemaTypeOpts<Array<any>> = {}) => ({
@@ -62,7 +62,7 @@ export const Type = {
       return ({
         ...options,
         type: [schema],
-      } as any) as T[];
+      } as any) as ConvertObject<T>[] | null | undefined;
     },
   }),
   schema: (options: SchemaTypeOpts<object> = {}) => ({
@@ -79,7 +79,7 @@ export const Type = {
       return ({
         ...options,
         type: schema,
-      } as any) as Extract<T>;
+      } as any) as Extract<T> | null | undefined;
     },
   }),
   ref: <T>(schema: T) => ({
