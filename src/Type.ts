@@ -65,6 +65,15 @@ export const Type = {
       } as any) as ConvertObject<T>[] | null | undefined;
     },
   }),
+  documentArray: (options: SchemaTypeOpts<object> = {}) => ({
+    of<T>(schema: T) {
+      return ({
+        required: true,
+        ...options,
+        type: [schema],
+      } as any) as Types.DocumentArray<Extract<T> & Types.Subdocument>;
+    },
+  }),
   schema: (options: SchemaTypeOpts<object> = {}) => ({
     of<T>(schema: T) {
       return ({

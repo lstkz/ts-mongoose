@@ -5,6 +5,11 @@ const AddressSchema = createSchema({
   country: Type.optionalString(),
   zip: Type.optionalString(),
 });
+const PhoneSchema = createSchema({
+  city: Type.string(),
+  name: Type.optionalString(),
+  number: Type.number(),
+});
 
 const UserSchema = createSchema({
   title: Type.string(),
@@ -23,6 +28,7 @@ const UserSchema = createSchema({
   m: Type.mixed(),
   otherId: Type.objectId(),
   address: Type.schema().of(AddressSchema),
+  phones: Type.documentArray().of(PhoneSchema),
 });
 
 const User = typedModel('User', UserSchema);
