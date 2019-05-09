@@ -145,11 +145,17 @@ User.findById('123').then(user => {
   email: Type.string({unique: true, index: true})
 }
 ```
-- `schema`, `object`, `array` types have a method `of` where you must provide a child type
+- `schema`, `object`, `array`, `documentsArray` types have a method `of` where you must provide a child type
 ```ts
 {
   // same as {type: [String], required: true}
   tags: Type.array().of(Type.string())
+}
+```
+```ts
+{
+  // same as {type: [ChildSchema], required: true}
+  tags: Type.documentsArray().of(ChildSchema)
 }
 ```
 - `ref` is a special type for creating references
