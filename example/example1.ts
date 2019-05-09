@@ -28,7 +28,7 @@ const UserSchema = createSchema({
   m: Type.mixed(),
   otherId: Type.objectId(),
   address: Type.schema().of(AddressSchema),
-  phones: Type.documentArray().of(PhoneSchema),
+  phones: Type.documentsArray().of(PhoneSchema),
 });
 
 const User = typedModel('User', UserSchema);

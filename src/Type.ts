@@ -65,13 +65,24 @@ export const Type = {
       } as any) as ConvertObject<T>[] | null | undefined;
     },
   }),
-  documentArray: (options: SchemaTypeOpts<object> = {}) => ({
-    of<T>(schema: T) {
+  documentsArray: (options: SchemaTypeOpts<Array<any>> = {}) => ({
+    of<T>(schema: Schema) {
       return ({
         required: true,
         ...options,
         type: [schema],
       } as any) as Types.DocumentArray<Extract<T> & Types.Subdocument>;
+    },
+  }),
+  optionalDocumentsArray: (options: SchemaTypeOpts<Array<any>> = {}) => ({
+    of<T>(schema: Schema) {
+      return ({
+        ...options,
+        type: [schema],
+      } as any) as
+        | Types.DocumentArray<Extract<T> & Types.Subdocument>
+        | null
+        | undefined;
     },
   }),
   schema: (options: SchemaTypeOpts<object> = {}) => ({
