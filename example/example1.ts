@@ -5,10 +5,10 @@ const AddressSchema = createSchema({
   country: Type.optionalString(),
   zip: Type.optionalString(),
 });
+
 const PhoneSchema = createSchema({
-  city: Type.string(),
+  phone: Type.number(),
   name: Type.optionalString(),
-  number: Type.number(),
 });
 
 const UserSchema = createSchema({

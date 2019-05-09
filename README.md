@@ -12,11 +12,11 @@ yarn add ts-mongoose mongoose @types/mongoose
 ```
 
 ## The Problem
-When using mongoose and Typescript, you must define schemas and interfaces. Both definitions must be maintained separately and must match each other. It can be error-prone during development and cause overhead.  
-  
+When using mongoose and Typescript, you must define schemas and interfaces. Both definitions must be maintained separately and must match each other. It can be error-prone during development and cause overhead.
+
 `ts-mongoose` is a very lightweight library that allows you to create a mongoose schema and a typescript type from a common definition.  
 All types as created from 1-liner functions and does not depend on decorators❗️.
-  
+
 For example:  
 `Type.string()` returns `{type: String, required: true}`, which is the same definition required in the original mongoose library.
 
@@ -31,6 +31,11 @@ const AddressSchema = new Schema({
   city: { type: String, required: true },
   country: String,
   zip: String,
+});
+
+const PhoneSchema = new Schema({
+  phone: { type: number, required: true },
+  name: String,
 });
 
 const UserSchema = new Schema({
@@ -61,6 +66,10 @@ const UserSchema = new Schema({
     type: AddressSchema,
     required: true,
   },
+  phones: {
+    type: [PhoneSchema],
+    required: true,
+  },
 });
 
 interface UserProps extends Document {
@@ -85,6 +94,11 @@ const AddressSchema = createSchema({
   zip: Type.optionalString(),
 });
 
+const PhoneSchema = createSchema({
+  phone: Type.number(),
+  name: Type.optionalString()
+});
+
 const UserSchema = createSchema({
   title: Type.string(),
   author: Type.string(),
@@ -102,6 +116,7 @@ const UserSchema = createSchema({
   m: Type.mixed(),
   otherId: Type.objectId(),
   address: Type.schema().of(AddressSchema),
+  phones: Type.documentsArray().of(PhoneSchema),
 });
 
 const User = typedModel('User', UserSchema);
