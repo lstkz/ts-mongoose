@@ -1,5 +1,5 @@
 import { SchemaTypeOpts, Schema, Types } from 'mongoose';
-import { Extract, ConvertObject } from './types';
+import { Extract, ConvertObject, ExtractSchema, IsSchemaType, SubdocumentsArrayWithoutId } from './types';
 
 const createType = <T>(type: any) => (options: SchemaTypeOpts<T> = {}) => {
   return ({
@@ -54,7 +54,11 @@ export const Type = {
         required: true,
         ...options,
         type: [schema],
-      } as any) as ConvertObject<T>[];
+      } as any) as IsSchemaType<
+        T,
+        Types.DocumentArray<ConvertObject<T> & Types.Subdocument>,
+        Array<ConvertObject<T>>
+      >;
     },
   }),
   optionalArray: (options: SchemaTypeOpts<Array<any>> = {}) => ({
@@ -62,25 +66,12 @@ export const Type = {
       return ({
         ...options,
         type: [schema],
-      } as any) as ConvertObject<T>[] | null | undefined;
-    },
-  }),
-  documentsArray: (options: SchemaTypeOpts<Array<any>> = {}) => ({
-    of<T>(schema: Schema) {
-      return ({
-        required: true,
-        ...options,
-        type: [schema],
-      } as any) as Types.DocumentArray<Extract<T> & Types.Subdocument>;
-    },
-  }),
-  optionalDocumentsArray: (options: SchemaTypeOpts<Array<any>> = {}) => ({
-    of<T>(schema: Schema) {
-      return ({
-        ...options,
-        type: [schema],
       } as any) as
-        | Types.DocumentArray<Extract<T> & Types.Subdocument>
+        | IsSchemaType<
+            T,
+            Types.DocumentArray<ConvertObject<T> & Types.Subdocument>, // TODO: id checking as it's done in
+            SubdocumentsArrayWithoutId<ConvertObject<T> & Types.Subdocument>
+          >
         | null
         | undefined;
     },
@@ -91,7 +82,7 @@ export const Type = {
         required: true,
         ...options,
         type: schema,
-      } as any) as Extract<T>;
+      } as any) as ExtractSchema<T>;
     },
   }),
   optionalSchema: (options: SchemaTypeOpts<object> = {}) => ({
@@ -99,7 +90,7 @@ export const Type = {
       return ({
         ...options,
         type: schema,
-      } as any) as Extract<T> | null | undefined;
+      } as any) as ExtractSchema<T> | null | undefined;
     },
   }),
   ref: <T>(schema: T) => ({

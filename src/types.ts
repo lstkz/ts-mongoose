@@ -1,8 +1,16 @@
 import { Types, Document } from 'mongoose';
 
 export type Extract<T> = T extends { definition: infer U } ? U : never;
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+type ExtractOptions<T> = T extends { options: infer U } ? U : never;
+type DisabledIdOption = { _id: false };
+export type ExtractSchema<T> = Extract<T> &
+  (ExtractOptions<T> extends DisabledIdOption
+    ? Omit<Types.Subdocument, '_id'>
+    : Types.Subdocument);
+export type IsSchemaType<T, IS, NOT> = T extends { definition: any } ? IS : NOT;
+export type SubdocumentsArrayWithoutId<T extends Types.Subdocument> = {[P in keyof Types.DocumentArray<T>]: Omit<T, '_id'>};
 
 type ExcludeBaseType<T> = Exclude<T, string | number | Types.ObjectId>;
 

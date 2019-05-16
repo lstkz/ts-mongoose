@@ -12,11 +12,11 @@ yarn add ts-mongoose mongoose @types/mongoose
 ```
 
 ## The Problem
-When using mongoose and Typescript, you must define schemas and interfaces. Both definitions must be maintained separately and must match each other. It can be error-prone during development and cause overhead.
-
+When using mongoose and Typescript, you must define schemas and interfaces. Both definitions must be maintained separately and must match each other. It can be error-prone during development and cause overhead.  
+  
 `ts-mongoose` is a very lightweight library that allows you to create a mongoose schema and a typescript type from a common definition.  
 All types as created from 1-liner functions and does not depend on decorators❗️.
-
+  
 For example:  
 `Type.string()` returns `{type: String, required: true}`, which is the same definition required in the original mongoose library.
 
@@ -34,9 +34,9 @@ const AddressSchema = new Schema({
 });
 
 const PhoneSchema = new Schema({
-  phone: { type: number, required: true },
-  name: String,
-});
+  phoneNumber: { type: Schema.Types.Number, required: true },
+  name: String
+})
 
 const UserSchema = new Schema({
   title: { type: String, required: true },
@@ -92,11 +92,11 @@ const AddressSchema = createSchema({
   city: Type.string(),
   country: Type.optionalString(),
   zip: Type.optionalString(),
-});
+}, { _id: false });
 
 const PhoneSchema = createSchema({
-  phone: Type.number(),
-  name: Type.optionalString()
+  phoneNumber: Type.number(),
+  name: Type.optionalString(),
 });
 
 const UserSchema = createSchema({
@@ -116,7 +116,7 @@ const UserSchema = createSchema({
   m: Type.mixed(),
   otherId: Type.objectId(),
   address: Type.schema().of(AddressSchema),
-  phones: Type.documentsArray().of(PhoneSchema),
+  phones: Type.array().of(PhoneSchema),
 });
 
 const User = typedModel('User', UserSchema);
@@ -145,18 +145,30 @@ User.findById('123').then(user => {
   email: Type.string({unique: true, index: true})
 }
 ```
-- `schema`, `object`, `array`, `documentsArray` types have a method `of` where you must provide a child type
+- `schema`, `object`, `array` types have a method `of` where you must provide a child type
 ```ts
 {
   // same as {type: [String], required: true}
   tags: Type.array().of(Type.string())
 }
 ```
+- `schema.of(ExampleSchema)` has typical for Subdocument additional fields and methods. Setting `{ _id: false }` in SchemaOptions won't attach `_id` property in Subdocument
 ```ts
+const AddressSchema = createSchema({city: Type.string()}, { _id: false });
 {
-  // same as {type: [ChildSchema], required: true}
-  tags: Type.documentsArray().of(ChildSchema)
+  // same as {type: AddressSchema}
+  address: Type.schema().of(AddressSchema)
 }
+// address property has city property, other Subdocument methods and properties except '_id'
+```
+- `array.of(ExampleSchema)` will return DocumentArray instead of standard array
+```ts
+const PhoneSchema = createSchema({phoneNumber: Type.number()}, { _id: false });
+{
+  // same as {type: [PhoneSchema]}
+  phones: Type.schema().of(PhoneSchema)
+}
+// phones property has such methods as create(), id(), but also those typical for arrays like map(), filter() etc
 ```
 - `ref` is a special type for creating references
 ```ts

@@ -273,39 +273,6 @@ describe('array', () => {
   });
 });
 
-describe('documentsArray', () => {
-  const CommentSchema = createSchema({
-    content: Type.string(),
-    date: Type.date(),
-  });
-  test('required', () => {
-    expect(Type.documentsArray().of(CommentSchema)).toEqual({
-      type: [CommentSchema],
-      required: true,
-    });
-  });
-  test('required with options', () => {
-    expect(Type.documentsArray({ unique: true }).of(CommentSchema)).toEqual({
-      type: [CommentSchema],
-      required: true,
-      unique: true,
-    });
-  });
-  test('optional', () => {
-    expect(Type.optionalDocumentsArray().of(CommentSchema)).toEqual({
-      type: [CommentSchema],
-    });
-  });
-  test('optional with options', () => {
-    expect(
-      Type.optionalDocumentsArray({ unique: true }).of(CommentSchema)
-    ).toEqual({
-      type: [CommentSchema],
-      unique: true,
-    });
-  });
-});
-
 describe('schema', () => {
   const schema = createSchema({
     foo: Type.string(),
