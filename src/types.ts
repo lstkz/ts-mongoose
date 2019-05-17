@@ -5,12 +5,22 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 type ExtractOptions<T> = T extends { options: infer U } ? U : never;
 type DisabledIdOption = { _id: false };
+type IsSchemaType<T, IS, NOT> = T extends { definition: any } ? IS : NOT;
+type SubdocumentsArrayWithoutId<T extends Types.Subdocument> = {
+  [P in keyof Types.DocumentArray<T>]: Omit<T, '_id'>
+};
+
 export type ExtractSchema<T> = Extract<T> &
   (ExtractOptions<T> extends DisabledIdOption
     ? Omit<Types.Subdocument, '_id'>
     : Types.Subdocument);
-export type IsSchemaType<T, IS, NOT> = T extends { definition: any } ? IS : NOT;
-export type SubdocumentsArrayWithoutId<T extends Types.Subdocument> = {[P in keyof Types.DocumentArray<T>]: Omit<T, '_id'>};
+export type ArrayOfElements<T> = IsSchemaType<
+  T,
+  ExtractOptions<T> extends DisabledIdOption
+    ? SubdocumentsArrayWithoutId<Extract<T> & Types.Subdocument>
+    : Types.DocumentArray<Extract<T> & Types.Subdocument>,
+  Array<T>
+>;
 
 type ExcludeBaseType<T> = Exclude<T, string | number | Types.ObjectId>;
 

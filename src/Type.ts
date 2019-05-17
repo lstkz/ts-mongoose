@@ -1,5 +1,10 @@
 import { SchemaTypeOpts, Schema, Types } from 'mongoose';
-import { Extract, ConvertObject, ExtractSchema, IsSchemaType, SubdocumentsArrayWithoutId } from './types';
+import {
+  Extract,
+  ConvertObject,
+  ExtractSchema,
+  ArrayOfElements,
+} from './types';
 
 const createType = <T>(type: any) => (options: SchemaTypeOpts<T> = {}) => {
   return ({
@@ -54,11 +59,7 @@ export const Type = {
         required: true,
         ...options,
         type: [schema],
-      } as any) as IsSchemaType<
-        T,
-        Types.DocumentArray<ConvertObject<T> & Types.Subdocument>,
-        Array<ConvertObject<T>>
-      >;
+      } as any) as ArrayOfElements<T>;
     },
   }),
   optionalArray: (options: SchemaTypeOpts<Array<any>> = {}) => ({
@@ -66,14 +67,7 @@ export const Type = {
       return ({
         ...options,
         type: [schema],
-      } as any) as
-        | IsSchemaType<
-            T,
-            Types.DocumentArray<ConvertObject<T> & Types.Subdocument>, // TODO: id checking as it's done in
-            SubdocumentsArrayWithoutId<ConvertObject<T> & Types.Subdocument>
-          >
-        | null
-        | undefined;
+      } as any) as ArrayOfElements<T> | null | undefined;
     },
   }),
   schema: (options: SchemaTypeOpts<object> = {}) => ({
