@@ -33,6 +33,11 @@ const AddressSchema = new Schema({
   zip: String,
 });
 
+const PhoneSchema = new Schema({
+  phoneNumber: { type: Schema.Types.Number, required: true },
+  name: String
+})
+
 const UserSchema = new Schema({
   title: { type: String, required: true },
   author: { type: String, required: true },
@@ -61,6 +66,10 @@ const UserSchema = new Schema({
     type: AddressSchema,
     required: true,
   },
+  phones: {
+    type: [PhoneSchema],
+    required: true,
+  },
 });
 
 interface UserProps extends Document {
@@ -83,6 +92,11 @@ const AddressSchema = createSchema({
   city: Type.string(),
   country: Type.optionalString(),
   zip: Type.optionalString(),
+}, { _id: false });
+
+const PhoneSchema = createSchema({
+  phoneNumber: Type.number(),
+  name: Type.optionalString(),
 });
 
 const UserSchema = createSchema({
@@ -102,6 +116,7 @@ const UserSchema = createSchema({
   m: Type.mixed(),
   otherId: Type.objectId(),
   address: Type.schema().of(AddressSchema),
+  phones: Type.array().of(PhoneSchema),
 });
 
 const User = typedModel('User', UserSchema);
@@ -136,6 +151,24 @@ User.findById('123').then(user => {
   // same as {type: [String], required: true}
   tags: Type.array().of(Type.string())
 }
+```
+- `schema.of(ExampleSchema)` has typical for Subdocument additional fields and methods. Setting `{ _id: false }` in SchemaOptions won't attach `_id` property in Subdocument
+```ts
+const AddressSchema = createSchema({city: Type.string()}, { _id: false });
+{
+  // same as {type: AddressSchema}
+  address: Type.schema().of(AddressSchema)
+}
+// address property has city property, other Subdocument methods and properties except '_id'
+```
+- `array.of(ExampleSchema)` will return DocumentArray instead of standard array
+```ts
+const PhoneSchema = createSchema({phoneNumber: Type.number()}, { _id: false });
+{
+  // same as {type: [PhoneSchema]}
+  phones: Type.schema().of(PhoneSchema)
+}
+// phones property has such methods as create(), id(), but also those typical for arrays like map(), filter() etc
 ```
 - `ref` is a special type for creating references
 ```ts

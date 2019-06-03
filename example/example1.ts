@@ -4,6 +4,11 @@ const AddressSchema = createSchema({
   city: Type.string(),
   country: Type.optionalString(),
   zip: Type.optionalString(),
+}, { _id: false });
+
+const PhoneSchema = createSchema({
+  phone: Type.number(),
+  name: Type.optionalString(),
 });
 
 const UserSchema = createSchema({
@@ -23,6 +28,7 @@ const UserSchema = createSchema({
   m: Type.mixed(),
   otherId: Type.objectId(),
   address: Type.schema().of(AddressSchema),
+  phones: Type.array().of(PhoneSchema),
 });
 
 const User = typedModel('User', UserSchema);
@@ -32,6 +38,6 @@ User.findById('123').then(user => {
   }
 });
 
-type UserDoc = ExtractDoc<typeof User>;
+type UserDoc = ExtractDoc<typeof UserSchema>;
 
 function blockUser(user: UserDoc) {}
