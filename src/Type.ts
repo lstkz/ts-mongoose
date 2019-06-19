@@ -4,6 +4,7 @@ import {
   ConvertObject,
   ExtractSchema,
   ArrayOfElements,
+  EnumOrString,
 } from './types';
 
 const createType = <T>(type: any) => (options: SchemaTypeOpts<T> = {}) => {
@@ -24,8 +25,6 @@ const createOptionalType = <T>(type: any) => (
 };
 
 export const Type = {
-  string: createType<string>(String),
-  optionalString: createOptionalType<string>(String),
   number: createType<number>(Number),
   optionalNumber: createOptionalType<number>(Number),
   boolean: createType<boolean>(Boolean),
@@ -36,6 +35,27 @@ export const Type = {
   optionalMixed: createOptionalType<any>(Schema.Types.Mixed),
   objectId: createType<Types.ObjectId>(Schema.Types.ObjectId),
   optionalObjectId: createOptionalType<Types.ObjectId>(Schema.Types.ObjectId),
+  string: <T extends readonly string[]>(
+    options: Omit<SchemaTypeOpts<string>, 'enum'> & {
+      enum?: T;
+    } = {}
+  ) => {
+    return ({
+      required: true,
+      ...options,
+      type: String,
+    } as unknown) as EnumOrString<T>;
+  },
+  optionalString: <T extends readonly string[]>(
+    options: Omit<SchemaTypeOpts<string>, 'enum'> & {
+      enum?: T;
+    } = {}
+  ) => {
+    return ({
+      ...options,
+      type: String,
+    } as unknown) as EnumOrString<T> | null | undefined;
+  },
   object: (options: SchemaTypeOpts<object> = {}) => ({
     of<T>(schema: T) {
       return ({

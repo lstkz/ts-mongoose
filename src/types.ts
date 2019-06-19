@@ -3,6 +3,10 @@ import { Types, Document } from 'mongoose';
 export type Extract<T> = T extends { definition: infer U } ? U : never;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+export type EnumOrString<
+  T extends readonly string[] | undefined
+> = T extends readonly string[] ? T[number] : undefined;
+
 type ExtractOptions<T> = T extends { options: infer U } ? U : never;
 type DisabledIdOption = { _id: false };
 type IsSchemaType<T, IS, NOT> = T extends { definition: any } ? IS : NOT;

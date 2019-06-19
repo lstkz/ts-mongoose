@@ -1,10 +1,12 @@
 import { createSchema, Type, typedModel, ExtractDoc } from '../src';
 
+const genders = ['male', 'female'] as const;
+
 const AddressSchema = createSchema({
-  city: Type.string(),
-  country: Type.optionalString(),
-  zip: Type.optionalString(),
-}, { _id: false });
+    city: Type.string(),
+    country: Type.optionalString(),
+    zip: Type.optionalString(),
+  }, { _id: false });
 
 const PhoneSchema = createSchema({
   phone: Type.number(),
@@ -26,6 +28,7 @@ const UserSchema = createSchema({
     favs: Type.number(),
   }),
   m: Type.mixed(),
+  gender: Type.string({ enum: genders }),
   otherId: Type.objectId(),
   address: Type.schema().of(AddressSchema),
   phones: Type.array().of(PhoneSchema),
