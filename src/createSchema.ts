@@ -1,11 +1,11 @@
 import { SchemaOptions, Schema } from 'mongoose';
-import { ConvertObject } from './types';
+import { ConvertObject, TypeWithTimestamps } from './types';
 
 type CreateSchema = <T extends { [x: string]: any }, O extends SchemaOptions>(
   definition?: T,
   options?: O extends SchemaOptions ? SchemaOptions : O
 ) => Schema & {
-  definition: ConvertObject<T>;
+  definition: ConvertObject<TypeWithTimestamps<O, T>>;
   options: O;
 };
 

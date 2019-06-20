@@ -4,7 +4,7 @@ const AddressSchema = createSchema({
   city: Type.string(),
   country: Type.optionalString(),
   zip: Type.optionalString(),
-}, { _id: false });
+}, { _id: false, timestamps: true });
 
 const PhoneSchema = createSchema({
   phone: Type.number(),
@@ -29,7 +29,7 @@ const UserSchema = createSchema({
   otherId: Type.objectId(),
   address: Type.schema().of(AddressSchema),
   phones: Type.array().of(PhoneSchema),
-});
+}, { timestamps: { createdAt: true } });
 
 const User = typedModel('User', UserSchema);
 User.findById('123').then(user => {

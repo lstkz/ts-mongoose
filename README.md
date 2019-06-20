@@ -31,7 +31,7 @@ const AddressSchema = new Schema({
   city: { type: String, required: true },
   country: String,
   zip: String,
-});
+}, { _id: false, timestamps: true });
 
 const PhoneSchema = new Schema({
   phoneNumber: { type: Schema.Types.Number, required: true },
@@ -70,7 +70,7 @@ const UserSchema = new Schema({
     type: [PhoneSchema],
     required: true,
   },
-});
+}, { timestamps: { createdAt: true } });
 
 interface UserProps extends Document {
   title: string;
@@ -92,7 +92,7 @@ const AddressSchema = createSchema({
   city: Type.string(),
   country: Type.optionalString(),
   zip: Type.optionalString(),
-}, { _id: false });
+}, { _id: false, timestamps: true });
 
 const PhoneSchema = createSchema({
   phoneNumber: Type.number(),
@@ -117,7 +117,7 @@ const UserSchema = createSchema({
   otherId: Type.objectId(),
   address: Type.schema().of(AddressSchema),
   phones: Type.array().of(PhoneSchema),
-});
+}, { timestamps: { createdAt: true } });
 
 const User = typedModel('User', UserSchema);
 User.findById('123').then(user => {
@@ -154,7 +154,7 @@ User.findById('123').then(user => {
 ```
 - `schema.of(ExampleSchema)` has typical for Subdocument additional fields and methods. Setting `{ _id: false }` in SchemaOptions won't attach `_id` property in Subdocument
 ```ts
-const AddressSchema = createSchema({city: Type.string()}, { _id: false });
+const AddressSchema = createSchema({city: Type.string()}, { _id: false, timestamps: true });
 {
   // same as {type: AddressSchema}
   address: Type.schema().of(AddressSchema)
