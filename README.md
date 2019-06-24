@@ -58,6 +58,11 @@ const UserSchema = new Schema({
     type: Schema.Types.Mixed,
     required: true,
   },
+  gender: {
+    type: Schema.Types.String,
+    required: true,
+    enum: ['male', 'female']
+  },
   otherId: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -88,6 +93,8 @@ const User: Model<UserProps> = model('User', UserSchema);
 ```ts
 import { createSchema, Type, typedModel } from 'ts-mongoose';
 
+const genders = ['male', 'female'] as const;
+
 const AddressSchema = createSchema({
   city: Type.string(),
   country: Type.optionalString(),
@@ -114,6 +121,7 @@ const UserSchema = createSchema({
     favs: Type.number(),
   }),
   m: Type.mixed(),
+  gender: Type.string({ enum: genders }),
   otherId: Type.objectId(),
   address: Type.schema().of(AddressSchema),
   phones: Type.array().of(PhoneSchema),
@@ -143,6 +151,14 @@ User.findById('123').then(user => {
 {
   // same as {type: String, required: true, unique: true, index: true}
   email: Type.string({unique: true, index: true})
+}
+```
+- Note that enum values need to be readonly array to be treated as literals by typescript
+```ts
+const genders = ['male', 'female'] as const;
+{
+  // same as {type: String, required: true, enum: ['male', 'female']}
+  gender: Type.string({enum: genders})
 }
 ```
 - `schema`, `object`, `array` types have a method `of` where you must provide a child type
