@@ -5,6 +5,7 @@ import {
   ExtractSchema,
   ArrayOfElements,
   EnumOrString,
+  Omit,
 } from './types';
 
 const createType = <T>(type: any) => (options: SchemaTypeOpts<T> = {}) => {
@@ -35,7 +36,7 @@ export const Type = {
   optionalMixed: createOptionalType<any>(Schema.Types.Mixed),
   objectId: createType<Types.ObjectId>(Schema.Types.ObjectId),
   optionalObjectId: createOptionalType<Types.ObjectId>(Schema.Types.ObjectId),
-  string: <T extends readonly string[]>(
+  string: <T extends ReadonlyArray<string>>(
     options: Omit<SchemaTypeOpts<string>, 'enum'> & {
       enum?: T;
     } = {}
@@ -46,7 +47,7 @@ export const Type = {
       type: String,
     } as unknown) as EnumOrString<T>;
   },
-  optionalString: <T extends readonly string[]>(
+  optionalString: <T extends ReadonlyArray<string>>(
     options: Omit<SchemaTypeOpts<string>, 'enum'> & {
       enum?: T;
     } = {}
