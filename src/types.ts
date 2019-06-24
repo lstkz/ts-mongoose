@@ -67,3 +67,36 @@ export type MakeOptional<T> = { [P in keyof T]?: T[P] };
 
 export type ConvertObject<T> = { [P in RequiredPropNames<T>]: T[P] } &
   { [P in OptionalPropNames<T>]?: T[P] };
+
+// timestamp types
+type CreatedAtType = { createdAt: Date };
+type UpdatedAtType = { updatedAt: Date };
+type TimestampsPresent = {
+  timestamps: true;
+};
+type TimestampsEachPresent = {
+  timestamps: {
+    createdAt: true;
+    updatedAt: true;
+  };
+};
+type TimestampCreatedByPresent = {
+  timestamps: {
+    createdAt: true;
+  };
+};
+type TimestampUpdatedByPresent = {
+  timestamps: {
+    updatedAt: true;
+  };
+};
+
+export type TypeWithTimestamps<Opts, T> = Opts extends (
+  | TimestampsPresent
+  | TimestampsEachPresent)
+  ? T & CreatedAtType & UpdatedAtType
+  : Opts extends TimestampCreatedByPresent
+  ? T & CreatedAtType
+  : Opts extends TimestampUpdatedByPresent
+  ? T & UpdatedAtType
+  : T;
