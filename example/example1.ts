@@ -3,10 +3,10 @@ import { createSchema, Type, typedModel, ExtractDoc } from '../src';
 const genders = ['male', 'female'] as const;
 
 const AddressSchema = createSchema({
-    city: Type.string(),
-    country: Type.optionalString(),
-    zip: Type.optionalString(),
-  }, { _id: false });
+  city: Type.string(),
+  country: Type.optionalString(),
+  zip: Type.optionalString(),
+}, { _id: false, timestamps: true });
 
 const PhoneSchema = createSchema({
   phone: Type.number(),
@@ -32,7 +32,7 @@ const UserSchema = createSchema({
   otherId: Type.objectId(),
   address: Type.schema().of(AddressSchema),
   phones: Type.array().of(PhoneSchema),
-});
+}, { timestamps: { createdAt: true } });
 
 const User = typedModel('User', UserSchema);
 User.findById('123').then(user => {

@@ -1,7 +1,7 @@
 import { Types, Document } from 'mongoose';
 
 export type Extract<T> = T extends { definition: infer U } ? U : never;
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export type EnumOrString<
   T extends readonly string[] | undefined
@@ -9,7 +9,7 @@ export type EnumOrString<
 
 type ExtractOptions<T> = T extends { options: infer U } ? U : never;
 type DisabledIdOption = { _id: false };
-type IsSchemaType<T, IS, NOT> = T extends { definition: any } ? IS : NOT;
+type IsSchemaType<T, IS, NOT> = 0 extends (1 & T) ? NOT : T extends { definition: any } ? IS : NOT;
 type SubdocumentsArrayWithoutId<T extends Types.Subdocument> = {
   [P in keyof Types.DocumentArray<T>]: Omit<T, '_id'>
 };
@@ -71,3 +71,36 @@ export type MakeOptional<T> = { [P in keyof T]?: T[P] };
 
 export type ConvertObject<T> = { [P in RequiredPropNames<T>]: T[P] } &
   { [P in OptionalPropNames<T>]?: T[P] };
+
+// timestamp types
+type CreatedAtType = { createdAt: Date };
+type UpdatedAtType = { updatedAt: Date };
+type TimestampsPresent = {
+  timestamps: true;
+};
+type TimestampsEachPresent = {
+  timestamps: {
+    createdAt: true;
+    updatedAt: true;
+  };
+};
+type TimestampCreatedByPresent = {
+  timestamps: {
+    createdAt: true;
+  };
+};
+type TimestampUpdatedByPresent = {
+  timestamps: {
+    updatedAt: true;
+  };
+};
+
+export type TypeWithTimestamps<Opts, T> = Opts extends (
+  | TimestampsPresent
+  | TimestampsEachPresent)
+  ? T & CreatedAtType & UpdatedAtType
+  : Opts extends TimestampCreatedByPresent
+  ? T & CreatedAtType
+  : Opts extends TimestampUpdatedByPresent
+  ? T & UpdatedAtType
+  : T;
