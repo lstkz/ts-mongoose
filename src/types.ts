@@ -15,7 +15,7 @@ type IsSchemaType<T, IS, NOT> = 0 extends (1 & T)
   ? IS
   : NOT;
 type SubdocumentsArrayWithoutId<T extends Types.Subdocument> = {
-  [P in keyof Types.DocumentArray<T>]: Omit<T, '_id'>
+  [P in keyof Types.DocumentArray<T>]: Omit<T, '_id'>;
 };
 
 export type ExtractSchema<T> = Extract<T> &
@@ -61,11 +61,11 @@ export type ExtractDoc<T> = T extends { definition: infer D }
   : never;
 
 export type OptionalPropNames<T> = {
-  [P in keyof T]: null extends T[P] ? P : never
+  [P in keyof T]: null extends T[P] ? P : never;
 }[keyof T];
 
 export type RequiredPropNames<T> = {
-  [P in keyof T]: null extends T[P] ? never : P
+  [P in keyof T]: null extends T[P] ? never : P;
 }[keyof T];
 
 export type OptionalProps<T> = { [P in OptionalPropNames<T>]: T[P] };
@@ -108,3 +108,25 @@ export type TypeWithTimestamps<Opts, T> = Opts extends (
   : Opts extends TimestampUpdatedByPresent
   ? T & UpdatedAtType
   : T;
+
+// statics
+export type ModelInstanceType = 'ModelInstanceType';
+export type ModelInstancesType = 'ModelInstancesType';
+
+type ArgumentTypes<T> = T extends (...args: infer U) => infer R ? U : never;
+type ReplaceReturnType<T, TNewReturn> = (...a: ArgumentTypes<T>) => TNewReturn;
+
+export type ExtractStatics<T, Rest, I> = T extends { options: infer O }
+  ? O extends { statics: infer S }
+    ? {
+        [P in keyof S]: S[P] extends (...args: any) => any
+          ? ReturnType<S[P]> extends ModelInstanceType
+            ? ReplaceReturnType<S[P], Promise<null | I>>
+            : ReturnType<S[P]> extends ModelInstancesType
+            ? ReplaceReturnType<S[P], Promise<I[]>>
+            : S[P]
+          : S[P];
+      } &
+        Rest
+    : Rest
+  : Rest;

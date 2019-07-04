@@ -12,11 +12,12 @@ yarn add ts-mongoose mongoose @types/mongoose
 ```
 
 ## The Problem
-When using mongoose and Typescript, you must define schemas and interfaces. Both definitions must be maintained separately and must match each other. It can be error-prone during development and cause overhead.  
-  
+
+When using mongoose and Typescript, you must define schemas and interfaces. Both definitions must be maintained separately and must match each other. It can be error-prone during development and cause overhead.
+
 `ts-mongoose` is a very lightweight library that allows you to create a mongoose schema and a typescript type from a common definition.  
 All types as created from 1-liner functions and does not depend on decorators❗️.
-  
+
 For example:  
 `Type.string()` returns `{type: String, required: true}`, which is the same definition required in the original mongoose library.
 
@@ -27,55 +28,61 @@ Before:
 ```ts
 import { Schema, model, Model, Document } from 'mongoose';
 
-const AddressSchema = new Schema({
-  city: { type: String, required: true },
-  country: String,
-  zip: String,
-}, { _id: false, timestamps: true });
+const AddressSchema = new Schema(
+  {
+    city: { type: String, required: true },
+    country: String,
+    zip: String,
+  },
+  { _id: false, timestamps: true }
+);
 
 const PhoneSchema = new Schema({
   phoneNumber: { type: Schema.Types.Number, required: true },
-  name: String
-})
+  name: String,
+});
 
-const UserSchema = new Schema({
-  title: { type: String, required: true },
-  author: { type: String, required: true },
-  body: { type: String, required: true },
-  comments: [
-    {
-      body: { type: String, required: true },
-      date: { type: Date, required: true },
+const UserSchema = new Schema(
+  {
+    title: { type: String, required: true },
+    author: { type: String, required: true },
+    body: { type: String, required: true },
+    comments: [
+      {
+        body: { type: String, required: true },
+        date: { type: Date, required: true },
+      },
+    ],
+    date: { type: Date, default: Date.now, required: true },
+    hidden: { type: Boolean, required: true },
+    meta: {
+      votes: { type: Schema.Types.Number },
+      favs: { type: Schema.Types.Number },
     },
-  ],
-  date: { type: Date, default: Date.now, required: true },
-  hidden: { type: Boolean, required: true },
-  meta: {
-    votes: { type: Schema.Types.Number },
-    favs: { type: Schema.Types.Number },
+    m: {
+      type: Schema.Types.Mixed,
+      required: true,
+    },
+    gender: {
+      type: Schema.Types.String,
+      required: true,
+      enum: ['male', 'female'],
+    },
+    otherId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
+    address: {
+      type: AddressSchema,
+      required: true,
+    },
+    phones: {
+      type: [PhoneSchema],
+      required: true,
+    },
   },
-  m: {
-    type: Schema.Types.Mixed,
-    required: true,
-  },
-  gender: {
-    type: Schema.Types.String,
-    required: true,
-    enum: ['male', 'female']
-  },
-  otherId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-  },
-  address: {
-    type: AddressSchema,
-    required: true,
-  },
-  phones: {
-    type: [PhoneSchema],
-    required: true,
-  },
-}, { timestamps: { createdAt: true } });
+  { timestamps: { createdAt: true } }
+);
 
 interface UserProps extends Document {
   title: string;
@@ -85,7 +92,6 @@ interface UserProps extends Document {
 }
 
 const User: Model<UserProps> = model('User', UserSchema);
-
 ```
 
 🎉🎉🎉 After:
@@ -135,9 +141,10 @@ User.findById('123').then(user => {
 });
 ```
 
-
 ### API
+
 - Each type has two forms: required and optional
+
 ```ts
 {
   // same as {type: String}
@@ -146,47 +153,65 @@ User.findById('123').then(user => {
   email: Type.string(),
 }
 ```
+
 - Each type accepts the same options from mongoose
+
 ```ts
 {
   // same as {type: String, required: true, unique: true, index: true}
-  email: Type.string({unique: true, index: true})
+  email: Type.string({ unique: true, index: true });
 }
 ```
+
 - Note that enum values need to be readonly array to be treated as literals by typescript
+
 ```ts
 const genders = ['male', 'female'] as const;
 {
   // same as {type: String, required: true, enum: ['male', 'female']}
-  gender: Type.string({enum: genders})
+  gender: Type.string({ enum: genders });
 }
 ```
+
 - `schema`, `object`, `array` types have a method `of` where you must provide a child type
+
 ```ts
 {
   // same as {type: [String], required: true}
-  tags: Type.array().of(Type.string())
+  tags: Type.array().of(Type.string());
 }
 ```
+
 - `schema.of(ExampleSchema)` has typical for Subdocument additional fields and methods. Setting `{ _id: false }` in SchemaOptions won't attach `_id` property in Subdocument
+
 ```ts
-const AddressSchema = createSchema({city: Type.string()}, { _id: false, timestamps: true });
+const AddressSchema = createSchema(
+  { city: Type.string() },
+  { _id: false, timestamps: true }
+);
 {
   // same as {type: AddressSchema}
-  address: Type.schema().of(AddressSchema)
+  address: Type.schema().of(AddressSchema);
 }
 // address property has city property, other Subdocument methods and properties except '_id'
 ```
+
 - `array.of(ExampleSchema)` will return DocumentArray instead of standard array
+
 ```ts
-const PhoneSchema = createSchema({phoneNumber: Type.number()}, { _id: false });
+const PhoneSchema = createSchema(
+  { phoneNumber: Type.number() },
+  { _id: false }
+);
 {
   // same as {type: [PhoneSchema]}
-  phones: Type.schema().of(PhoneSchema)
+  phones: Type.schema().of(PhoneSchema);
 }
 // phones property has such methods as create(), id(), but also those typical for arrays like map(), filter() etc
 ```
+
 - `ref` is a special type for creating references
+
 ```ts
 {
   // same as [{type: Schema.Types.ObjectId, ref: 'Comment'}]
@@ -195,15 +220,16 @@ const PhoneSchema = createSchema({phoneNumber: Type.number()}, { _id: false });
   ),
 }
 ```
+
 - `populateTs(property: string)` use this function to populate a property and adjust the returned type automatically. Under the hood it calls only the native `populate` method.  
-Method will be available if you import a special plugin.
+  Method will be available if you import a special plugin.
+
 ```ts
 // models.ts
 
-import 'ts-mongoose/plugin'
+import 'ts-mongoose/plugin';
 
 User.find().populateTs('comments');
-
 ```
 
 ## Extracting Document type
@@ -213,7 +239,13 @@ Use `ExtractProps` to extract generated base model properties.
 Example:
 
 ```ts
-import { createSchema, Type, typedModel, ExtractDoc, ExtractProps } from 'ts-mongoose';
+import {
+  createSchema,
+  Type,
+  typedModel,
+  ExtractDoc,
+  ExtractProps,
+} from 'ts-mongoose';
 
 export const UserSchema = createSchema({
   email: Type.string(),
@@ -225,8 +257,7 @@ export const User = typedModel('User', UserSchema);
 export type UserDoc = ExtractDoc<typeof UserSchema>;
 export type UserProps = ExtractProps<typeof UserSchema>;
 
-
-// example function 
+// example function
 
 async function blockUser(user: UserDoc) {
   user.isBlocked = true;
@@ -240,20 +271,19 @@ function randomUser(): UserProps {
   return {
     email: 'user1@example.com',
     username: 'user1',
-  }
+  };
 }
-
 ```
 
 ## Refs
-Refs and populations are supported.  
-Check code under `example/example4.ts`.  
 
+Refs and populations are supported.  
+Check code under `example/example4.ts`.
 
 ![alt autocomplete](.github/refs.gif)
 
-
 ### Custom Field
+
 If you need to specify custom fields in the model, you can add a fake annotation.  
 It's only required if you add virtual fields or custom methods to the model.
 
@@ -268,13 +298,41 @@ const UserSchema = createSchema({
 });
 const User = typedModel('User', UserSchema);
 ```
+
 Autocomplete popup:  
 ![alt autocomplete](.github/custom.png)
 
+### Static methods
 
+If you need to have static custom methods on Model you can pass them in `statics` property, which is part of schema options. For functions returning instance/s of Model, use `ModelInstanceType` / `ModelInstancesType` interfaces as returning value.
 
+```ts
+const UserSchema = createSchema(
+  {
+    name: Type.string(),
+    age: Type.number(),
+  },
+  {
+    statics: {
+      findByName: function(name: string): ModelInstancesType {
+        return this.find({ name: name });
+      },
+      findOneByName: function(name: string): ModelInstanceType {
+        return this.findOne({ name: name });
+      },
+      countLetters: function(name: string, bonus?: number): number {
+        return name.length + (bonus ? bonus : 0);
+      },
+    },
+  }
+);
+
+const User = typedModel('User', UserSchema);
+User.countLetters('a');
+```
 
 ### TODO
+
 - support types: Decimal128, Map
 
 MIT
