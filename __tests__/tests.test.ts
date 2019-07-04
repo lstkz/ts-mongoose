@@ -1,4 +1,4 @@
-import { createSchema, Type } from '../src';
+import { createSchema, Type, typedModel } from '../src';
 import { Schema } from 'mongoose';
 
 describe('string', () => {
@@ -326,5 +326,26 @@ describe('ref', () => {
         ],
       },
     });
+  });
+});
+
+describe('typedModel - statics', () => {
+  test('should return Model with static function', () => {
+    const CommentSchema = createSchema(
+      {
+        content: Type.string(),
+        date: Type.date(),
+      },
+      {
+        statics: {
+          countLetters: function(name: string, bonus?: number): number {
+            return name.length + (bonus ? bonus : 0);
+          },
+        },
+      }
+    );
+    const CommentModel = typedModel('cm', CommentSchema);
+    expect(typeof CommentModel.countLetters).toBe('function');
+    expect(CommentSchema.options).not.toHaveProperty('statics');
   });
 });
