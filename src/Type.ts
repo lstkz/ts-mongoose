@@ -47,7 +47,7 @@ export const Type = {
       type: String,
     } as unknown) as EnumOrString<T>;
   },
-  optionalString: <T extends ReadonlyArray<string>>(
+  optionalString: <T extends ReadonlyArray<string | null>>(
     options: Omit<SchemaTypeOpts<string>, 'enum'> & {
       enum?: T;
     } = {}

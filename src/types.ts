@@ -4,8 +4,8 @@ export type Extract<T> = T extends { definition: infer U } ? U : never;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export type EnumOrString<
-  T extends ReadonlyArray<string> | undefined
-> = T extends ReadonlyArray<string> ? T[number] : undefined;
+  T extends ReadonlyArray<string | null> | undefined
+> = T extends ReadonlyArray<string | null> ? T[number] : undefined;
 
 type ExtractOptions<T> = T extends { options: infer U } ? U : never;
 type DisabledIdOption = { _id: false };
