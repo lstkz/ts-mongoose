@@ -1,6 +1,6 @@
 {
   "name": "ts-mongoose",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "",
   "main": "index.js",
   "module": "es/index.js",
@@ -16,6 +16,9 @@
     "url": "git+https://github.com/BetterCallSky/ts-mongoose.git"
   },
   "author": "Łukasz Sentkiewicz",
+  "contributors": [
+    "Łukasz Gosławski"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/BetterCallSky/ts-mongoose/issues"
@@ -28,7 +31,7 @@
     "jest": "^23.6.0",
     "prettier": "^1.14.3",
     "ts-jest": "^23.10.4",
-    "typescript": "^3.1.6"
+    "typescript": "^3.6.3"
   },
   "dependencies": {},
   "peerDependencies": {

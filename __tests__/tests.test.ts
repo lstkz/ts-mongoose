@@ -3,26 +3,60 @@ import { Schema } from 'mongoose';
 
 describe('string', () => {
   test('required', () => {
-    expect(Type.string()).toEqual({
+    expect(Type.string({ required: true })).toEqual({
       type: String,
       required: true,
     });
   });
   test('required with options', () => {
-    expect(Type.string({ unique: true })).toEqual({
+    expect(Type.string({ required: true, unique: true })).toEqual({
       type: String,
       required: true,
       unique: true,
     });
   });
   test('optional', () => {
-    expect(Type.optionalString()).toEqual({
+    expect(Type.string()).toEqual({
       type: String,
     });
   });
   test('optional with options', () => {
-    expect(Type.optionalString({ unique: true })).toEqual({
+    expect(Type.string({ unique: true })).toEqual({
       type: String,
+      unique: true,
+    });
+  });
+});
+
+const genders = ['female', 'male'] as const;
+describe('string enum', () => {
+  test('required', () => {
+    expect(Type.string({ required: true, enum: genders })).toEqual({
+      type: String,
+      enum: ['female', 'male'],
+      required: true,
+    });
+  });
+  test('required with options', () => {
+    expect(
+      Type.string({ required: true, enum: genders, unique: true })
+    ).toEqual({
+      type: String,
+      enum: ['female', 'male'],
+      required: true,
+      unique: true,
+    });
+  });
+  test('optional', () => {
+    expect(Type.string({ enum: genders })).toEqual({
+      type: String,
+      enum: ['female', 'male'],
+    });
+  });
+  test('optional with options', () => {
+    expect(Type.string({ enum: genders, unique: true })).toEqual({
+      type: String,
+      enum: ['female', 'male'],
       unique: true,
     });
   });
@@ -30,25 +64,25 @@ describe('string', () => {
 
 describe('number', () => {
   test('required', () => {
-    expect(Type.number()).toEqual({
+    expect(Type.number({ required: true })).toEqual({
       type: Number,
       required: true,
     });
   });
   test('required with options', () => {
-    expect(Type.number({ unique: true })).toEqual({
+    expect(Type.number({ required: true, unique: true })).toEqual({
       type: Number,
       required: true,
       unique: true,
     });
   });
   test('optional', () => {
-    expect(Type.optionalNumber()).toEqual({
+    expect(Type.number()).toEqual({
       type: Number,
     });
   });
   test('optional with options', () => {
-    expect(Type.optionalNumber({ unique: true })).toEqual({
+    expect(Type.number({ unique: true })).toEqual({
       type: Number,
       unique: true,
     });
@@ -57,25 +91,25 @@ describe('number', () => {
 
 describe('boolean', () => {
   test('required', () => {
-    expect(Type.boolean()).toEqual({
+    expect(Type.boolean({ required: true })).toEqual({
       type: Boolean,
       required: true,
     });
   });
   test('required with options', () => {
-    expect(Type.boolean({ unique: true })).toEqual({
+    expect(Type.boolean({ required: true, unique: true })).toEqual({
       type: Boolean,
       required: true,
       unique: true,
     });
   });
   test('optional', () => {
-    expect(Type.optionalBoolean()).toEqual({
+    expect(Type.boolean()).toEqual({
       type: Boolean,
     });
   });
   test('optional with options', () => {
-    expect(Type.optionalBoolean({ unique: true })).toEqual({
+    expect(Type.boolean({ unique: true })).toEqual({
       type: Boolean,
       unique: true,
     });
@@ -84,25 +118,25 @@ describe('boolean', () => {
 
 describe('date', () => {
   test('required', () => {
-    expect(Type.date()).toEqual({
+    expect(Type.date({ required: true })).toEqual({
       type: Date,
       required: true,
     });
   });
   test('required with options', () => {
-    expect(Type.date({ unique: true })).toEqual({
+    expect(Type.date({ required: true, unique: true })).toEqual({
       type: Date,
       required: true,
       unique: true,
     });
   });
   test('optional', () => {
-    expect(Type.optionalDate()).toEqual({
+    expect(Type.date()).toEqual({
       type: Date,
     });
   });
   test('optional with options', () => {
-    expect(Type.optionalDate({ unique: true })).toEqual({
+    expect(Type.date({ unique: true })).toEqual({
       type: Date,
       unique: true,
     });
@@ -111,25 +145,25 @@ describe('date', () => {
 
 describe('mixed', () => {
   test('required', () => {
-    expect(Type.mixed()).toEqual({
+    expect(Type.mixed({ required: true })).toEqual({
       type: Schema.Types.Mixed,
       required: true,
     });
   });
   test('required with options', () => {
-    expect(Type.mixed({ unique: true })).toEqual({
+    expect(Type.mixed({ required: true, unique: true })).toEqual({
       type: Schema.Types.Mixed,
       required: true,
       unique: true,
     });
   });
   test('optional', () => {
-    expect(Type.optionalMixed()).toEqual({
+    expect(Type.mixed()).toEqual({
       type: Schema.Types.Mixed,
     });
   });
   test('optional with options', () => {
-    expect(Type.optionalMixed({ unique: true })).toEqual({
+    expect(Type.mixed({ unique: true })).toEqual({
       type: Schema.Types.Mixed,
       unique: true,
     });
@@ -138,26 +172,53 @@ describe('mixed', () => {
 
 describe('objectId', () => {
   test('required', () => {
-    expect(Type.objectId()).toEqual({
+    expect(Type.objectId({ required: true })).toEqual({
       type: Schema.Types.ObjectId,
       required: true,
     });
   });
   test('required with options', () => {
-    expect(Type.objectId({ unique: true })).toEqual({
+    expect(Type.objectId({ required: true, unique: true })).toEqual({
       type: Schema.Types.ObjectId,
       required: true,
       unique: true,
     });
   });
   test('optional', () => {
-    expect(Type.optionalObjectId()).toEqual({
+    expect(Type.objectId()).toEqual({
       type: Schema.Types.ObjectId,
     });
   });
   test('optional with options', () => {
-    expect(Type.optionalObjectId({ unique: true })).toEqual({
+    expect(Type.objectId({ unique: true })).toEqual({
       type: Schema.Types.ObjectId,
+      unique: true,
+    });
+  });
+});
+
+describe('decimal128', () => {
+  test('required', () => {
+    expect(Type.decimal128({ required: true })).toEqual({
+      type: Schema.Types.Decimal128,
+      required: true,
+    });
+  });
+  test('required with options', () => {
+    expect(Type.decimal128({ required: true, unique: true })).toEqual({
+      type: Schema.Types.Decimal128,
+      required: true,
+      unique: true,
+    });
+  });
+  test('optional', () => {
+    expect(Type.decimal128()).toEqual({
+      type: Schema.Types.Decimal128,
+    });
+  });
+  test('optional with options', () => {
+    expect(Type.decimal128({ unique: true })).toEqual({
+      type: Schema.Types.Decimal128,
       unique: true,
     });
   });
@@ -166,8 +227,8 @@ describe('objectId', () => {
 describe('object', () => {
   test('required', () => {
     expect(
-      Type.object().of({
-        foo: Type.string(),
+      Type.object({ required: true }).of({
+        foo: Type.string({ required: true }),
       })
     ).toEqual({
       type: {
@@ -181,8 +242,8 @@ describe('object', () => {
   });
   test('required with options', () => {
     expect(
-      Type.object({ unique: true }).of({
-        foo: Type.string(),
+      Type.object({ required: true, unique: true }).of({
+        foo: Type.string({ required: true }),
       })
     ).toEqual({
       type: {
@@ -197,8 +258,8 @@ describe('object', () => {
   });
   test('optional', () => {
     expect(
-      Type.optionalObject().of({
-        foo: Type.string(),
+      Type.object().of({
+        foo: Type.string({ required: true }),
       })
     ).toEqual({
       type: {
@@ -211,8 +272,8 @@ describe('object', () => {
   });
   test('optional with options', () => {
     expect(
-      Type.optionalObject({ unique: true }).of({
-        foo: Type.string(),
+      Type.object({ unique: true }).of({
+        foo: Type.string({ required: true }),
       })
     ).toEqual({
       type: {
@@ -228,7 +289,9 @@ describe('object', () => {
 
 describe('array', () => {
   test('required', () => {
-    expect(Type.array().of(Type.string())).toEqual({
+    expect(
+      Type.array({ required: true }).of(Type.string({ required: true }))
+    ).toEqual({
       type: [
         {
           type: String,
@@ -239,7 +302,11 @@ describe('array', () => {
     });
   });
   test('required with options', () => {
-    expect(Type.array({ unique: true }).of(Type.string())).toEqual({
+    expect(
+      Type.array({ required: true, unique: true }).of(
+        Type.string({ required: true })
+      )
+    ).toEqual({
       type: [
         {
           type: String,
@@ -251,7 +318,7 @@ describe('array', () => {
     });
   });
   test('optional', () => {
-    expect(Type.optionalArray().of(Type.string())).toEqual({
+    expect(Type.array().of(Type.string({ required: true }))).toEqual({
       type: [
         {
           type: String,
@@ -261,7 +328,9 @@ describe('array', () => {
     });
   });
   test('optional with options', () => {
-    expect(Type.optionalArray({ unique: true }).of(Type.string())).toEqual({
+    expect(
+      Type.array({ unique: true }).of(Type.string({ required: true }))
+    ).toEqual({
       type: [
         {
           type: String,
@@ -278,25 +347,25 @@ describe('schema', () => {
     foo: Type.string(),
   });
   test('required', () => {
-    expect(Type.schema().of(schema)).toEqual({
+    expect(Type.schema({ required: true }).of(schema)).toEqual({
       type: schema,
       required: true,
     });
   });
   test('required with options', () => {
-    expect(Type.schema({ unique: true }).of(schema)).toEqual({
+    expect(Type.schema({ required: true, unique: true }).of(schema)).toEqual({
       type: schema,
       required: true,
       unique: true,
     });
   });
   test('optional', () => {
-    expect(Type.optionalSchema().of(schema)).toEqual({
+    expect(Type.schema().of(schema)).toEqual({
       type: schema,
     });
   });
   test('optional with options', () => {
-    expect(Type.optionalSchema({ unique: true }).of(schema)).toEqual({
+    expect(Type.schema({ unique: true }).of(schema)).toEqual({
       type: schema,
       unique: true,
     });
@@ -304,14 +373,14 @@ describe('schema', () => {
 });
 
 describe('ref', () => {
-  test('ref', () => {
+  test('required', () => {
     const CommentSchema = createSchema({
       content: Type.string(),
       date: Type.date(),
     });
     const schema = {
-      comments: Type.array().of(
-        Type.ref(Type.string()).to('Comment', CommentSchema)
+      comments: Type.array({ required: true }).of(
+        Type.ref(Type.string({ required: true })).to('Comment', CommentSchema)
       ),
     };
     expect(schema).toEqual({
@@ -331,21 +400,15 @@ describe('ref', () => {
 
 describe('typedModel - statics', () => {
   test('should return Model with static function', () => {
-    const CommentSchema = createSchema(
-      {
-        content: Type.string(),
-        date: Type.date(),
+    const CommentSchema = createSchema({
+      content: Type.string(),
+      date: Type.date(),
+    });
+    const CommentModel = typedModel('cm', CommentSchema, undefined, undefined, {
+      countLetters: function(name: string, bonus?: number): number {
+        return name.length + (bonus ? bonus : 0);
       },
-      {
-        statics: {
-          countLetters: function(name: string, bonus?: number): number {
-            return name.length + (bonus ? bonus : 0);
-          },
-        },
-      }
-    );
-    const CommentModel = typedModel('cm', CommentSchema);
+    });
     expect(typeof CommentModel.countLetters).toBe('function');
-    expect(CommentSchema.options).not.toHaveProperty('statics');
   });
 });

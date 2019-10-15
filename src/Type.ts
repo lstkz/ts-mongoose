@@ -1,119 +1,67 @@
-import { SchemaTypeOpts, Schema, Types } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 import {
-  Extract,
-  ConvertObject,
-  ExtractSchema,
   ArrayOfElements,
+  Convert,
   EnumOrString,
-  Omit,
+  Extract,
+  GetType,
+  TypeOptions,
+  GetSubDocument,
+  OptionalField,
+  Optional,
+  ArrElement,
+  Definition,
+  DefinitionField,
 } from './types';
 
-const createType = <T>(type: any) => (options: SchemaTypeOpts<T> = {}) => {
-  return ({
-    required: true,
-    ...options,
-    type,
-  } as any) as T;
-};
-
-const createOptionalType = <T>(type: any) => (
-  options: SchemaTypeOpts<T> = {}
-) => {
-  return ({
-    ...options,
-    type,
-  } as any) as T | null | undefined;
-};
+const createType = <T>(type: any) => <O extends TypeOptions<T>>(options?: O) =>
+  (({ ...(options ? options : {}), type } as unknown) as GetType<
+    O,
+    T extends string ? EnumOrString<O> : T
+  >);
 
 export const Type = {
   number: createType<number>(Number),
-  optionalNumber: createOptionalType<number>(Number),
   boolean: createType<boolean>(Boolean),
-  optionalBoolean: createOptionalType<boolean>(Boolean),
   date: createType<Date>(Date),
-  optionalDate: createOptionalType<Date>(Date),
   mixed: createType<any>(Schema.Types.Mixed),
-  optionalMixed: createOptionalType<any>(Schema.Types.Mixed),
   objectId: createType<Types.ObjectId>(Schema.Types.ObjectId),
-  optionalObjectId: createOptionalType<Types.ObjectId>(Schema.Types.ObjectId),
-  string: <T extends ReadonlyArray<string>>(
-    options: Omit<SchemaTypeOpts<string>, 'enum'> & {
-      enum?: T;
-    } = {}
-  ) => {
-    return ({
-      required: true,
-      ...options,
-      type: String,
-    } as unknown) as EnumOrString<T>;
-  },
-  optionalString: <T extends ReadonlyArray<string>>(
-    options: Omit<SchemaTypeOpts<string>, 'enum'> & {
-      enum?: T;
-    } = {}
-  ) => {
-    return ({
-      ...options,
-      type: String,
-    } as unknown) as EnumOrString<T> | null | undefined;
-  },
-  object: (options: SchemaTypeOpts<object> = {}) => ({
-    of<T>(schema: T) {
+  string: createType<string>(String),
+  decimal128: createType<Types.Decimal128>(Schema.Types.Decimal128),
+  object: <O extends TypeOptions<object>>(options?: O) => ({
+    of<T extends object>(schema: T) {
       return ({
-        required: true,
-        ...options,
+        ...(options ? options : {}),
         type: schema,
-      } as any) as ConvertObject<T>;
+      } as unknown) as GetType<O, { [P in keyof Convert<T>]: Convert<T>[P] }>;
     },
   }),
-  optionalObject: (options: SchemaTypeOpts<object> = {}) => ({
+  array: <O extends TypeOptions<Array<any>>>(options?: O) => ({
     of<T>(schema: T) {
       return ({
-        ...options,
-        type: schema,
-      } as any) as ConvertObject<T> | null | undefined;
-    },
-  }),
-  array: (options: SchemaTypeOpts<Array<any>> = {}) => ({
-    of<T>(schema: T) {
-      return ({
-        required: true,
-        ...options,
+        ...(options ? options : {}),
         type: [schema],
-      } as any) as ArrayOfElements<T>;
+      } as unknown) as GetType<O, ArrayOfElements<ArrElement<T>>>;
     },
   }),
-  optionalArray: (options: SchemaTypeOpts<Array<any>> = {}) => ({
-    of<T>(schema: T) {
+  schema: <O extends TypeOptions<object>>(options?: O) => ({
+    of<T extends Definition>(schema: T) {
       return ({
-        ...options,
-        type: [schema],
-      } as any) as ArrayOfElements<T> | null | undefined;
-    },
-  }),
-  schema: (options: SchemaTypeOpts<object> = {}) => ({
-    of<T>(schema: T) {
-      return ({
-        required: true,
-        ...options,
+        ...(options ? options : {}),
         type: schema,
-      } as any) as ExtractSchema<T>;
-    },
-  }),
-  optionalSchema: (options: SchemaTypeOpts<object> = {}) => ({
-    of<T>(schema: T) {
-      return ({
-        ...options,
-        type: schema,
-      } as any) as ExtractSchema<T> | null | undefined;
+      } as unknown) as GetType<O, Extract<T> & GetSubDocument<T>>;
     },
   }),
   ref: <T>(schema: T) => ({
-    to<TSchema>(name: string, refSchema: TSchema) {
+    to<TSchema extends Definition>(name: string, refSchema: TSchema) {
       return ({
         ...(schema as any),
         ref: name,
-      } as any) as Extract<TSchema> | T;
+      } as unknown) as
+        | T
+        | (T extends Record<OptionalField, any>
+            ? Optional<TSchema[DefinitionField]>
+            : TSchema[DefinitionField]);
     },
   }),
 };
