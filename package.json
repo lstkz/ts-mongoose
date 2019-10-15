@@ -26,6 +26,7 @@
   "homepage": "https://github.com/BetterCallSky/ts-mongoose#readme",
   "devDependencies": {
     "@types/mongoose": "^5.5.21",
+    "@types/node": "^12.7.12",
     "mongoose": "^5.7.5",
     "@types/jest": "^24.0.19",
     "jest": "^24.9.0",
