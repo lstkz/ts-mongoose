@@ -25,17 +25,17 @@
   },
   "homepage": "https://github.com/BetterCallSky/ts-mongoose#readme",
   "devDependencies": {
-    "@types/mongoose": "^5.3.2",
-    "mongoose": "^5.3.14",
-    "@types/jest": "^23.3.9",
-    "jest": "^23.6.0",
-    "prettier": "^1.14.3",
-    "ts-jest": "^23.10.4",
-    "typescript": "^3.1.6"
+    "@types/mongoose": "^5.5.21",
+    "mongoose": "^5.7.5",
+    "@types/jest": "^24.0.19",
+    "jest": "^24.9.0",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.3"
   },
   "dependencies": {},
   "peerDependencies": {
-    "@types/mongoose": "^5.3.2",
-    "mongoose": "^5.3.14"
+    "@types/mongoose": "^5.5.21",
+    "mongoose": "^5.7.5"
   }
 }
