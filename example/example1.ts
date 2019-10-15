@@ -4,38 +4,38 @@ const genders = ['male', 'female'] as const;
 
 const AddressSchema = createSchema(
   {
-    city: Type.string(),
-    country: Type.optionalString(),
-    zip: Type.optionalString(),
+    city: Type.string({ required: true }),
+    country: Type.string(),
+    zip: Type.string(),
   },
   { _id: false, timestamps: true }
 );
 
 const PhoneSchema = createSchema({
-  phone: Type.number(),
-  name: Type.optionalString(),
+  phoneNumber: Type.number({ required: true }),
+  name: Type.string(),
 });
 
 const UserSchema = createSchema(
   {
-    title: Type.string(),
-    author: Type.string(),
-    body: Type.string(),
+    title: Type.string({ required: true }),
+    author: Type.string({ required: true }),
+    body: Type.string({ required: true }),
     comments: Type.array().of({
-      body: Type.string(),
-      date: Type.date(),
+      body: Type.string({ required: true }),
+      date: Type.date({ required: true }),
     }),
     date: Type.date({ default: Date.now as any }),
-    hidden: Type.boolean(),
+    hidden: Type.boolean({ required: true }),
     meta: Type.object().of({
-      votes: Type.number(),
-      favs: Type.number(),
+      votes: Type.number({ required: true }),
+      favs: Type.number({ required: true }),
     }),
-    m: Type.mixed(),
-    gender: Type.string({ enum: genders }),
-    otherId: Type.objectId(),
-    address: Type.schema().of(AddressSchema),
-    phones: Type.array().of(PhoneSchema),
+    m: Type.mixed({ required: true }),
+    gender: Type.string({ required: true, enum: genders }),
+    otherId: Type.objectId({ required: true }),
+    address: Type.schema({ required: true }).of(AddressSchema),
+    phones: Type.array({ required: true }).of(PhoneSchema),
   },
   { timestamps: { createdAt: true } }
 );
@@ -49,4 +49,6 @@ User.findById('123').then(user => {
 
 type UserDoc = ExtractDoc<typeof UserSchema>;
 
-function blockUser(user: UserDoc) {}
+function blockUser(user: UserDoc) {
+  // user.
+}

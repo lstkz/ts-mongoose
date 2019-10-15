@@ -19,7 +19,7 @@ When using mongoose and Typescript, you must define schemas and interfaces. Both
 All types as created from 1-liner functions and does not depend on decorators❗️.
 
 For example:  
-`Type.string()` returns `{type: String, required: true}`, which is the same definition required in the original mongoose library.
+`Type.string({ required: true })` returns `{type: String, required: true}`, which is the same definition required in the original mongoose library.
 
 ## Example
 
@@ -101,37 +101,43 @@ import { createSchema, Type, typedModel } from 'ts-mongoose';
 
 const genders = ['male', 'female'] as const;
 
-const AddressSchema = createSchema({
-  city: Type.string(),
-  country: Type.optionalString(),
-  zip: Type.optionalString(),
-}, { _id: false, timestamps: true });
+const AddressSchema = createSchema(
+  {
+    city: Type.string({ required: true }),
+    country: Type.string(),
+    zip: Type.string(),
+  },
+  { _id: false, timestamps: true }
+);
 
 const PhoneSchema = createSchema({
-  phoneNumber: Type.number(),
-  name: Type.optionalString(),
+  phoneNumber: Type.number({ required: true }),
+  name: Type.string(),
 });
 
-const UserSchema = createSchema({
-  title: Type.string(),
-  author: Type.string(),
-  body: Type.string(),
-  comments: Type.array().of({
-    body: Type.string(),
-    date: Type.date(),
-  }),
-  date: Type.date({ default: Date.now as any }),
-  hidden: Type.boolean(),
-  meta: Type.object().of({
-    votes: Type.number(),
-    favs: Type.number(),
-  }),
-  m: Type.mixed(),
-  gender: Type.string({ enum: genders }),
-  otherId: Type.objectId(),
-  address: Type.schema().of(AddressSchema),
-  phones: Type.array().of(PhoneSchema),
-}, { timestamps: { createdAt: true } });
+const UserSchema = createSchema(
+  {
+    title: Type.string({ required: true }),
+    author: Type.string({ required: true }),
+    body: Type.string({ required: true }),
+    comments: Type.array().of({
+      body: Type.string({ required: true }),
+      date: Type.date({ required: true }),
+    }),
+    date: Type.date({ default: Date.now as any }),
+    hidden: Type.boolean({ required: true }),
+    meta: Type.object().of({
+      votes: Type.number({ required: true }),
+      favs: Type.number({ required: true }),
+    }),
+    m: Type.mixed({ required: true }),
+    gender: Type.string({ required: true, enum: genders }),
+    otherId: Type.objectId({ required: true }),
+    address: Type.schema({ required: true }).of(AddressSchema),
+    phones: Type.array({ required: true }).of(PhoneSchema),
+  },
+  { timestamps: { createdAt: true } }
+);
 
 const User = typedModel('User', UserSchema);
 User.findById('123').then(user => {
@@ -148,9 +154,9 @@ User.findById('123').then(user => {
 ```ts
 {
   // same as {type: String}
-  firstName: Type.optionalString(),
+  firstName: Type.string(),
   // same as {type: String, required: true}
-  email: Type.string(),
+  email: Type.string({ required: true }),
 }
 ```
 
@@ -159,7 +165,7 @@ User.findById('123').then(user => {
 ```ts
 {
   // same as {type: String, required: true, unique: true, index: true}
-  email: Type.string({ unique: true, index: true });
+  email: Type.string({ required: true, unique: true, index: true });
 }
 ```
 
@@ -168,7 +174,7 @@ User.findById('123').then(user => {
 ```ts
 const genders = ['male', 'female'] as const;
 {
-  // same as {type: String, required: true, enum: ['male', 'female']}
+  // same as {type: String, enum: ['male', 'female']}
   gender: Type.string({ enum: genders });
 }
 ```
@@ -178,7 +184,7 @@ const genders = ['male', 'female'] as const;
 ```ts
 {
   // same as {type: [String], required: true}
-  tags: Type.array().of(Type.string());
+  tags: Type.array({ required: true }).of(Type.string({ required: true }));
 }
 ```
 
@@ -186,7 +192,7 @@ const genders = ['male', 'female'] as const;
 
 ```ts
 const AddressSchema = createSchema(
-  { city: Type.string() },
+  { city: Type.string({ required: true }) },
   { _id: false, timestamps: true }
 );
 {
@@ -200,12 +206,12 @@ const AddressSchema = createSchema(
 
 ```ts
 const PhoneSchema = createSchema(
-  { phoneNumber: Type.number() },
+  { phoneNumber: Type.number({ required: true }) },
   { _id: false }
 );
 {
   // same as {type: [PhoneSchema]}
-  phones: Type.schema().of(PhoneSchema);
+  phones: Type.array().of(PhoneSchema);
 }
 // phones property has such methods as create(), id(), but also those typical for arrays like map(), filter() etc
 ```
@@ -248,9 +254,9 @@ import {
 } from 'ts-mongoose';
 
 export const UserSchema = createSchema({
-  email: Type.string(),
-  username: Type.string(),
-  isBlocked: Type.optionalBoolean(),
+  email: Type.string({ required: true }),
+  username: Type.string({ required: true }),
+  isBlocked: Type.boolean(),
 });
 
 export const User = typedModel('User', UserSchema);
@@ -289,8 +295,8 @@ It's only required if you add virtual fields or custom methods to the model.
 
 ```ts
 const UserSchema = createSchema({
-  title: Type.string(),
-  author: Type.string(),
+  title: Type.string({ required: true }),
+  author: Type.string({ required: true }),
   ...({} as {
     generatedField: string;
     customFunction: () => number;
@@ -304,35 +310,31 @@ Autocomplete popup:
 
 ### Static methods
 
-If you need to have static custom methods on Model you can pass them in `statics` property, which is part of schema options. For functions returning instance/s of Model, use `ModelInstanceType` / `ModelInstancesType` interfaces as returning value.
+If you need to have static custom methods on Model you can pass them as 5th parameter of `typedModel` function. It should automatically figured out returning value, but you can declare it too.
 
 ```ts
-const UserSchema = createSchema(
-  {
-    name: Type.string(),
-    age: Type.number(),
-  },
-  {
-    statics: {
-      findByName: function(name: string): ModelInstancesType {
-        return this.find({ name: name });
-      },
-      findOneByName: function(name: string): ModelInstanceType {
-        return this.findOne({ name: name });
-      },
-      countLetters: function(name: string, bonus?: number): number {
-        return name.length + (bonus ? bonus : 0);
-      },
-    },
-  }
-);
+const UserSchema = createSchema({
+  name: Type.string({ required: true }),
+  age: Type.number({ required: true }),
+});
 
-const User = typedModel('User', UserSchema);
-User.countLetters('a');
+const User = typedModel('User', UserSchema, undefined, undefined, {
+  findByName: function(name: string) {
+    return this.find({ name });
+  },
+  findOneByName: function(name: string) {
+    return this.findOne({ name });
+  },
+  countLetters: function(name: string, bonus?: number) {
+    return name.length + (bonus ? bonus : 0);
+  },
+});
+const u = await User.findOne({});
+if (u) u.name;
 ```
 
 ### TODO
 
-- support types: Decimal128, Map
+- support types: Map
 
 MIT

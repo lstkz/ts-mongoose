@@ -1,21 +1,14 @@
 import { SchemaOptions, Schema } from 'mongoose';
-import { ConvertObject, TypeWithTimestamps } from './types';
+import { GetSchemaType } from './types';
 
-type SchemaOpts = SchemaOptions & { statics?: { [x: string]: any } };
-
-type CreateSchema = <T extends { [x: string]: any }, O extends SchemaOpts>(
+type CreateSchema = <T extends { [x: string]: any }, O extends SchemaOptions>(
   definition?: T,
-  options?: O
+  options?: O // TODO: to be fixed
 ) => Schema & {
-  definition: ConvertObject<TypeWithTimestamps<O, T>>;
+  definition: { [P in keyof GetSchemaType<O, T>]: GetSchemaType<O, T>[P] };
   options: O;
 };
 
 export const createSchema: CreateSchema = (definition?, options?) => {
-  if (!options) return new Schema(definition, options) as any;
-
-  const { statics, ...opts } = options;
-  const schema = new Schema(definition, opts) as any;
-  if (statics) schema.statics = statics;
-  return schema;
+  return new Schema(definition, options) as any;
 };
