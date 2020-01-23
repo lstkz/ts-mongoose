@@ -1,5 +1,5 @@
 import { createSchema, Type, typedModel } from '../src';
-import mongoose, { Schema, Connection } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 describe('string', () => {
   test('required', () => {
