@@ -1,5 +1,5 @@
 import { createSchema, Type, typedModel } from '../src';
-import { Schema } from 'mongoose';
+import mongoose, { Schema, Connection } from 'mongoose';
 
 describe('string', () => {
   test('required', () => {
@@ -410,5 +410,21 @@ describe('typedModel - statics', () => {
       },
     });
     expect(typeof CommentModel.countLetters).toBe('function');
+  });
+});
+
+describe('typedModel - mongoose.createConnection', () => {
+  const connection = new mongoose.Connection(mongoose) // Created like this for offline use
+  const CommentSchema = createSchema({
+    content: Type.string(),
+    date: Type.date(),
+  });
+  const CommentModel = typedModel('cm', CommentSchema, undefined, undefined, {}, connection);
+
+  test('returns correct modelName', () => {
+    expect(CommentModel.modelName).toBe('cm');
+  });
+  test('connection contains correct model', () => {
+    expect(connection.modelNames()).toContain('cm');
   });
 });
