@@ -411,6 +411,14 @@ describe('typedModel - statics', () => {
     });
     expect(typeof CommentModel.countLetters).toBe('function');
   });
+  test('should return Model without a static function', () => {
+    const CommentSchemaNoStatic = createSchema({
+      content: Type.string(),
+      date: Type.date(),
+    });
+    const CommentModelNoStatic = typedModel('cmns', CommentSchemaNoStatic);
+    expect(typeof CommentModelNoStatic.countLetters).toBe('undefined');
+  });
 });
 
 describe('typedModel - mongoose.createConnection', () => {
