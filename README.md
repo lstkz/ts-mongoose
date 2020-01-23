@@ -333,6 +333,34 @@ const u = await User.findOne({});
 if (u) u.name;
 ```
 
+### Connection model
+
+If you are using `mongoose.createConnection(...)`, you can pass a `<mongoose.Connection>` as the 6th parameter of `typedModel`. Then the module will be added to that connection instead.  
+(**Note:** If using the `connection` parameter, the `skipInit` parameter will not be used)
+
+```ts
+import mongoose from 'mongoose'
+import { typedModel } from 'ts-mongoose'
+
+const UserSchema = createSchema({
+  name: Type.string({ required: true }),
+  age: Type.number({ required: true }),
+});
+
+const connection = mongoose.createConnection(`mongodb://localhost:27017/test`, {...})
+
+const User = typedModel('User', UserSchema, undefined, undefined, undefined, connection);
+
+
+console.log(connection.modelNames()) // Prints: [ 'User' ]
+
+// Now you can use the model directly
+User.find({ name: 'Peter' })
+// Or through the connection
+connection.model('User').find({ name: 'Peter' })
+
+```
+
 ### TODO
 
 - support types: Map
