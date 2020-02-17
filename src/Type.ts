@@ -28,6 +28,7 @@ export const Type = {
   objectId: createType<Types.ObjectId>(Schema.Types.ObjectId),
   string: createType<string>(String),
   decimal128: createType<Types.Decimal128>(Schema.Types.Decimal128),
+  buffer: createType<Types.Buffer>(Schema.Types.Buffer),
   object: <O extends TypeOptions<object>>(options?: O) => ({
     of<T extends object>(schema: T) {
       return ({
@@ -60,8 +61,8 @@ export const Type = {
       } as unknown) as
         | T
         | (T extends Record<OptionalField, any>
-            ? Optional<TSchema[DefinitionField]>
-            : TSchema[DefinitionField]);
+          ? Optional<TSchema[DefinitionField]>
+          : TSchema[DefinitionField]);
     },
   }),
 };
