@@ -1,6 +1,6 @@
 {
   "name": "ts-mongoose",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "",
   "main": "index.js",
   "module": "es/index.js",
@@ -25,11 +25,11 @@
   },
   "homepage": "https://github.com/BetterCallSky/ts-mongoose#readme",
   "devDependencies": {
+    "@types/jest": "^24.0.19",
     "@types/mongoose": "^5.5.21",
     "@types/node": "^12.7.12",
-    "mongoose": "^5.7.5",
-    "@types/jest": "^24.0.19",
     "jest": "^24.9.0",
+    "mongoose": "^5.7.5",
     "prettier": "^1.18.2",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.3"
