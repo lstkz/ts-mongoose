@@ -223,7 +223,32 @@ describe('decimal128', () => {
     });
   });
 });
-
+describe('buffer', () => {
+  test('required', () => {
+    expect(Type.buffer({ required: true })).toEqual({
+      type: Schema.Types.Buffer,
+      required: true,
+    });
+  });
+  test('required with options', () => {
+    expect(Type.buffer({ required: true, unique: true })).toEqual({
+      type: Schema.Types.Buffer,
+      required: true,
+      unique: true,
+    });
+  });
+  test('optional', () => {
+    expect(Type.buffer()).toEqual({
+      type: Schema.Types.Buffer
+    });
+  });
+  test('optional with options', () => {
+    expect(Type.buffer({ unique: true })).toEqual({
+      type: Schema.Types.Buffer,
+      unique: true,
+    });
+  });
+});
 describe('object', () => {
   test('required', () => {
     expect(
@@ -405,7 +430,7 @@ describe('typedModel - statics', () => {
       date: Type.date(),
     });
     const CommentModel = typedModel('cm', CommentSchema, undefined, undefined, {
-      countLetters: function(name: string, bonus?: number): number {
+      countLetters: function (name: string, bonus?: number): number {
         return name.length + (bonus ? bonus : 0);
       },
     });
