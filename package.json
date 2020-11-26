@@ -1,6 +1,6 @@
 {
   "name": "ts-mongoose",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "",
   "main": "index.js",
   "module": "es/index.js",
