@@ -25,7 +25,7 @@ async function test() {
   if (notPopulated) {
     notPopulated.comments;
   }
-  const users = await User.find('123').populateTs('comments');
+  const users = await User.find({ a: '123' }).populateTs('comments');
   users.forEach(user => {
     user.comments;
   });
